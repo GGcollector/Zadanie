@@ -19,9 +19,13 @@ public class ProductServiceStart implements ProductService {
 
     private double summaryPrice;
 
-    private final CreateProducts createProducts;
+    public final CreateProducts createProducts;
 
-    private final MessageSource messageSource;
+    public final MessageSource messageSource;
+
+    public double getSummaryPrice() {
+        return summaryPrice;
+    }
 
     public ProductServiceStart(CreateProducts createProducts, MessageSource messageSource) {
         this.createProducts = createProducts;

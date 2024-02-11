@@ -13,34 +13,20 @@ import java.util.Locale;
 
 @Service
 @Profile("Pro")
-public class ProductServicePro implements ProductService {
+public class ProductServicePro extends ProductServicePlus {
     @Value("${locale}")
     private String locale;
-    private double summaryPrice;
-    @Value("${vatRate}")
-    private double vatRate;
     @Value("${discount}")
     private double discount;
-    private double summaryVatPrice;
     private double summaryVatPriceDiscountIncluded;
-    private final CreateProducts createProducts;
-    private final MessageSource messageSource;
+
     public ProductServicePro(CreateProducts createProducts, MessageSource messageSource) {
-        this.createProducts = createProducts;
-        this.messageSource = messageSource;
+        super(createProducts, messageSource);
     }
     @Override
     public void displayInfo() {
-        List<Product> products = createProducts.create(5);
-        products.forEach(product -> summaryPrice += product.getPrice()); // można przerobić aby działało
-        for (Product product : products) {
-            summaryPrice += product.getPrice();
-        }
-        summaryPrice = Math.round(summaryPrice); //zaokrągla sume, żeby nie było 3 miejsc po przecinku.
-        summaryVatPrice = summaryPrice * vatRate;
-        summaryVatPriceDiscountIncluded = summaryVatPrice - discount;
-        System.out.println(messageSource.getMessage("Price_of_all_products", new Object[]{summaryPrice}, Locale.ENGLISH));
-        System.out.println(messageSource.getMessage("Price_of_all_products_plus_VAT", new Object[]{summaryVatPrice}, Locale.ENGLISH));
+        super.displayInfo();
+        summaryVatPriceDiscountIncluded = getSummaryVatPrice() - discount;
         System.out.println(messageSource.getMessage("Price_of_all_products_plus_VAT_minus_discount", new Object[]{summaryVatPriceDiscountIncluded}, Locale.ENGLISH));
     }
 }
